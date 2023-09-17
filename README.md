@@ -34,7 +34,17 @@ npx prisma migrate dev --name init
 
 This command creates a new migration file based on your schema changes and applies it to your database.
 
-5. `Install Prisma Client:` Install the Prisma Client library by running the following command:
+5. `Generate Prisma Client:` Generate the Prisma Client by running the following command:
+
+```bash
+npx prisma generate
+```
+
+This command generates the Prisma Client, which provides an interface to interact with your database.
+
+### Note (If Prisma Client Does Not Installed Before)
+
+`Install Prisma Client:` Install the Prisma Client library by running the following command:
 
 ```bash
 yarn add @prisma/client
