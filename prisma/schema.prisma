@@ -10,6 +10,63 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model SampleTable{
+model User{
   id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  phone_number String @unique
+  profile_image String
+  gender Gender
+  blood_group BloodGroup
+  role Role @default(user)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Admin{
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  phone_number String @unique
+  profile_image String
+  gender Gender
+  blood_group BloodGroup
+  role String @default("admin")
+  department AdminDepartment?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  super_admin
+  admin
+  user
+  psychologist
+  doctor
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHERS
+}
+
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum AdminDepartment {
+  USER_MANAGEMENT
+  COURSE_MANAGEMENT
+  PSYCHOLOGIST_MANAGEMENT
+  DOCTORS_MANAGEMENT
 }
