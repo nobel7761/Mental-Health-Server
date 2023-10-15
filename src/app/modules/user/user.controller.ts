@@ -131,6 +131,164 @@ const deleteSingleUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const createPsychologist = catchAsync(async (req: Request, res: Response) => {
+  const accessToken = req.headers.authorization as string;
+  const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+    payload: JwtPayload;
+  } | null;
+  const authUserId = decodedToken?.payload?.id as string;
+
+  const result = await UserService.createPsychologist(req.body, authUserId);
+
+  sendResponse<User>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Psychologist Created Successfully',
+    data: result,
+  });
+});
+
+const getSinglePsychologist = catchAsync(
+  async (req: Request, res: Response) => {
+    const accessToken = req.headers.authorization as string;
+    const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+      payload: JwtPayload;
+    } | null;
+    const authUserId = decodedToken?.payload?.id as string;
+
+    const { id } = req.params;
+
+    const result = await UserService.getSinglePsychologist(id, authUserId);
+
+    sendResponse<User>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Psychologist Data Retrieved Successfully',
+      data: result,
+    });
+  }
+);
+
+const updateSinglePsychologist = catchAsync(
+  async (req: Request, res: Response) => {
+    const accessToken = req.headers.authorization as string;
+    const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+      payload: JwtPayload;
+    } | null;
+    const authUserId = decodedToken?.payload?.id as string;
+
+    const { id } = req.params;
+
+    const result = await UserService.updateSinglePsychologist(
+      id,
+      authUserId,
+      req.body
+    );
+
+    sendResponse<User>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Psychologist Data Updated Successfully',
+      data: result,
+    });
+  }
+);
+
+const deleteSinglePsychologist = catchAsync(
+  async (req: Request, res: Response) => {
+    const accessToken = req.headers.authorization as string;
+    const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+      payload: JwtPayload;
+    } | null;
+    const authUserId = decodedToken?.payload?.id as string;
+
+    const { id } = req.params;
+
+    const result = await UserService.deleteSinglePsychologist(id, authUserId);
+
+    sendResponse<User>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Psychologist Deleted Successfully',
+      data: result,
+    });
+  }
+);
+
+const createDoctor = catchAsync(async (req: Request, res: Response) => {
+  const accessToken = req.headers.authorization as string;
+  const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+    payload: JwtPayload;
+  } | null;
+  const authUserId = decodedToken?.payload?.id as string;
+
+  const result = await UserService.createDoctor(req.body, authUserId);
+
+  sendResponse<User>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Doctor Created Successfully',
+    data: result,
+  });
+});
+
+const getSingleDoctor = catchAsync(async (req: Request, res: Response) => {
+  const accessToken = req.headers.authorization as string;
+  const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+    payload: JwtPayload;
+  } | null;
+  const authUserId = decodedToken?.payload?.id as string;
+
+  const { id } = req.params;
+
+  const result = await UserService.getSingleDoctor(id, authUserId);
+
+  sendResponse<User>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Doctor Data Retrieved Successfully',
+    data: result,
+  });
+});
+
+const updateSingleDoctor = catchAsync(async (req: Request, res: Response) => {
+  const accessToken = req.headers.authorization as string;
+  const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+    payload: JwtPayload;
+  } | null;
+  const authUserId = decodedToken?.payload?.id as string;
+
+  const { id } = req.params;
+
+  const result = await UserService.updateSingleDoctor(id, authUserId, req.body);
+
+  sendResponse<User>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Doctor Data Updated Successfully',
+    data: result,
+  });
+});
+
+const deleteSingleDoctor = catchAsync(async (req: Request, res: Response) => {
+  const accessToken = req.headers.authorization as string;
+  const decodedToken = jwt.decode(accessToken, { complete: true }) as {
+    payload: JwtPayload;
+  } | null;
+  const authUserId = decodedToken?.payload?.id as string;
+
+  const { id } = req.params;
+
+  const result = await UserService.deleteSingleDoctor(id, authUserId);
+
+  sendResponse<User>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Doctor Deleted Successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getMyProfile,
@@ -139,4 +297,12 @@ export const UserController = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  createPsychologist,
+  getSinglePsychologist,
+  updateSinglePsychologist,
+  deleteSinglePsychologist,
+  createDoctor,
+  getSingleDoctor,
+  updateSingleDoctor,
+  deleteSingleDoctor,
 };

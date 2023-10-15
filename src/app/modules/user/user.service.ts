@@ -30,11 +30,18 @@ const createUser = async (data: User): Promise<User | undefined> => {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Duplicate Phone Number Found!');
   }
 
-  const result = await prisma.user.create({
-    data,
-  });
+  if (data.role === Role.user) {
+    const result = await prisma.user.create({
+      data,
+    });
 
-  return result;
+    return result;
+  } else {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      'You can only create user role!'
+    );
+  }
 };
 
 const getMyProfile = async (authUserId: string): Promise<User | null> => {
@@ -377,6 +384,320 @@ const deleteSingleUser = async (
   return result;
 };
 
+const createPsychologist = async (
+  payload: User,
+  authUserId?: string
+): Promise<User | undefined> => {
+  const isEmailExists = await prisma.admin.findFirst({
+    where: {
+      email: payload.email,
+    },
+  });
+
+  if (isEmailExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email Already Exist');
+  }
+
+  const isPhoneNumberExists = await prisma.admin.findFirst({
+    where: {
+      phone_number: payload.phone_number,
+    },
+  });
+
+  if (isPhoneNumberExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Duplicate Phone Number Found!');
+  }
+
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (
+      authUser.department === 'PSYCHOLOGIST_MANAGEMENT' &&
+      payload.role === Role.psychologist
+    ) {
+      const result = await prisma.user.create({
+        data: payload,
+      });
+
+      return result;
+    } else if (authUser.department !== 'PSYCHOLOGIST_MANAGEMENT') {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'You are not authorized to create psychologist!'
+      );
+    } else if (payload.role !== Role.psychologist) {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'User Role Should be Psychologist!'
+      );
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
+const getSinglePsychologist = async (id: string, authUserId: string) => {
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (authUser.department === 'PSYCHOLOGIST_MANAGEMENT') {
+      const result = await prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!result) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Phychologist Not Found!');
+      }
+
+      return result;
+    } else {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
+const updateSinglePsychologist = async (
+  id: string,
+  authUserId: string,
+  payload: Partial<User>
+) => {
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (authUser.department === 'PSYCHOLOGIST_MANAGEMENT') {
+      const isExists = await prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!isExists) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Psychologist Doesn't Exists");
+      }
+
+      const result = await prisma.user.update({
+        where: {
+          id,
+        },
+        data: payload,
+      });
+
+      return result;
+    } else {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
+const deleteSinglePsychologist = async (id: string, authUserId: string) => {
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (authUser.department === 'PSYCHOLOGIST_MANAGEMENT') {
+      const isExists = await prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!isExists) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Psychologist Doesn't Exists");
+      }
+
+      const result = await prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+
+      return result;
+    } else {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
+const createDoctor = async (
+  payload: User,
+  authUserId?: string
+): Promise<User | undefined> => {
+  const isEmailExists = await prisma.admin.findFirst({
+    where: {
+      email: payload.email,
+    },
+  });
+
+  if (isEmailExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Email Already Exist');
+  }
+
+  const isPhoneNumberExists = await prisma.admin.findFirst({
+    where: {
+      phone_number: payload.phone_number,
+    },
+  });
+
+  if (isPhoneNumberExists) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Duplicate Phone Number Found!');
+  }
+
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (
+      authUser.department === 'DOCTORS_MANAGEMENT' &&
+      payload.role === Role.doctor
+    ) {
+      const result = await prisma.user.create({
+        data: payload,
+      });
+
+      return result;
+    } else if (authUser.department !== 'DOCTORS_MANAGEMENT') {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'You are not authorized to create doctor!'
+      );
+    } else if (payload.role !== Role.doctor) {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'User Role Should be Doctor!'
+      );
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
+const getSingleDoctor = async (id: string, authUserId: string) => {
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (authUser.department === 'DOCTORS_MANAGEMENT') {
+      const result = await prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!result) {
+        throw new ApiError(httpStatus.NOT_FOUND, 'Doctor Not Found!');
+      }
+
+      return result;
+    } else {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
+const updateSingleDoctor = async (
+  id: string,
+  authUserId: string,
+  payload: Partial<User>
+) => {
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (authUser.department === 'DOCTORS_MANAGEMENT') {
+      const isExists = await prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!isExists) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Doctor Doesn't Exists");
+      }
+
+      const result = await prisma.user.update({
+        where: {
+          id,
+        },
+        data: payload,
+      });
+
+      return result;
+    } else {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
+const deleteSingleDoctor = async (id: string, authUserId: string) => {
+  const authUser = await prisma.admin.findFirst({
+    where: {
+      id: authUserId,
+    },
+  });
+
+  if (authUser) {
+    if (authUser.department === 'DOCTORS_MANAGEMENT') {
+      const isExists = await prisma.user.findFirst({
+        where: {
+          id,
+        },
+      });
+
+      if (!isExists) {
+        throw new ApiError(httpStatus.NOT_FOUND, "Doctor Doesn't Exists");
+      }
+
+      const result = await prisma.user.delete({
+        where: {
+          id,
+        },
+      });
+
+      return result;
+    } else {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+    }
+  } else {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized!');
+  }
+};
+
 export const UserService = {
   createUser,
   getMyProfile,
@@ -385,4 +706,12 @@ export const UserService = {
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  createPsychologist,
+  getSinglePsychologist,
+  updateSinglePsychologist,
+  deleteSinglePsychologist,
+  createDoctor,
+  getSingleDoctor,
+  updateSingleDoctor,
+  deleteSingleDoctor,
 };

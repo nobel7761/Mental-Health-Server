@@ -13,20 +13,6 @@ router.post(
   UserController.createUser
 );
 
-// router.post(
-//   '/create-psychologist',
-//   auth(ENUM_USER_ROLE.ADMIN),
-//   validateRequest(UserValidation.createUserOrPsychologistOrDoctor),
-//   UserController.createUserOrUserOrPsychologistOrDoctor
-// );
-
-// router.post(
-//   '/create-psychologist',
-//   auth(ENUM_USER_ROLE.ADMIN),
-//   validateRequest(UserValidation.createUserOrPsychologistOrDoctor),
-//   UserController.createUserOrUserOrPsychologistOrDoctor
-// );
-
 router.get('/my-profile', UserController.getMyProfile);
 
 router.patch(
@@ -58,6 +44,63 @@ router.delete(
   '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   UserController.deleteSingleUser
+);
+
+router.post(
+  '/create-psychologist',
+  auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(UserValidation.createUser),
+  UserController.createPsychologist
+);
+
+router.get(
+  '/psychologist/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.getSinglePsychologist
+);
+
+router.patch(
+  '/psychologist/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.updateSinglePsychologist
+);
+
+router.delete(
+  '/psychologist/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.deleteSinglePsychologist
+);
+
+// router.post(
+//   '/create-psychologist',
+//   auth(ENUM_USER_ROLE.ADMIN),
+//   validateRequest(UserValidation.createUserOrPsychologistOrDoctor),
+//   UserController.createUserOrUserOrPsychologistOrDoctor
+// );
+
+router.post(
+  '/create-doctor',
+  auth(ENUM_USER_ROLE.ADMIN),
+  validateRequest(UserValidation.createUser),
+  UserController.createDoctor
+);
+
+router.get(
+  '/doctor/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.getSingleDoctor
+);
+
+router.patch(
+  '/doctor/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.updateSingleDoctor
+);
+
+router.delete(
+  '/doctor/:id',
+  auth(ENUM_USER_ROLE.ADMIN),
+  UserController.deleteSingleDoctor
 );
 
 export const UserRoutes = router;

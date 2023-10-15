@@ -19,7 +19,7 @@ model User{
   profile_image String
   gender Gender
   blood_group BloodGroup
-  role Role @default(user)
+  role String @default("user")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -34,9 +34,80 @@ model Admin{
   gender Gender
   blood_group BloodGroup
   role String @default("admin")
-  department AdminDepartment?
+  department AdminDepartment @default(USER_MANAGEMENT)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Psychologist{
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  phone_number String @unique
+  profile_image String
+  gender Gender
+  blood_group BloodGroup
+  role String @default("psychologist")
+  timeSlot String
+  degree String
+  dayOff WeekDays @default(FRIDAY)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course{
+  id String @id @default(uuid())
+  title String
+  description String
+  cover_photo String
+  duration String
+  price Int
+  discount Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model ServiceDepartment{
+  id String @id @default(uuid())
+  title ServiceDepartmentOptions @default(DOCTOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ServiceDepartmentOptions {
+  DOCTOR
+  PSYCHOLOGIST
+}
+
+model UserEnrolledCourse{
+  id String @id @default(uuid())
+  status UserEnrolledCourseStatus? @default(ONGOING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String
+  user User @relation(fields: [userId], references: [id])
+
+  courseId String
+  course Course @relation(fields: [courseId], references: [id])
+}
+
+enum UserEnrolledCourseStatus {
+  ONGOING
+  COMPLETED
+  WITHDRAWN
+}
+
+enum WeekDays {
+  SATURDAY
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
 }
 
 enum Role {
