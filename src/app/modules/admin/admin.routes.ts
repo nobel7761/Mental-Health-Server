@@ -8,13 +8,11 @@ import { AdminValidation } from './admin.validation';
 const router = express.Router();
 
 router.post(
-  '/create-admin',
+  '/',
   validateRequest(AdminValidation.createAdmin),
   auth(ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.createAdmin
 );
-
-router.get('/my-profile', AdminController.getMyProfile);
 
 router.get('/', auth(ENUM_USER_ROLE.SUPER_ADMIN), AdminController.getAllAdmin);
 
@@ -25,13 +23,7 @@ router.get(
 );
 
 router.patch(
-  '/update-my-profile',
-  validateRequest(AdminValidation.updateAdmin),
-  AdminController.updateMyProfile
-);
-
-router.patch(
-  '/update-admin/:id',
+  '/:id',
   auth(ENUM_USER_ROLE.SUPER_ADMIN),
   validateRequest(AdminValidation.updateAdmin),
   AdminController.updateAdmin
@@ -42,5 +34,13 @@ router.delete(
   auth(ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.deleteSingleAdmin
 );
+
+// router.get('/my-profile', AdminController.getMyProfile);
+
+// router.patch(
+//   '/update-my-profile',
+//   validateRequest(AdminValidation.updateAdmin),
+//   AdminController.updateMyProfile
+// );
 
 export const AdminRoutes = router;

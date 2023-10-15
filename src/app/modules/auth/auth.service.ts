@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { Patient } from '@prisma/client';
 import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
@@ -8,13 +8,13 @@ import prisma from '../../../shared/prisma';
 import { ILoginUserResponse } from './auth.interfaces';
 
 const login = async (
-  payload: Pick<User, 'email' | 'password'>
+  payload: Pick<Patient, 'email' | 'password'>
 ): Promise<ILoginUserResponse | null> => {
   const { email, password } = payload;
 
   let isExists;
 
-  isExists = await prisma.user.findFirst({
+  isExists = await prisma.patient.findFirst({
     where: {
       email: email,
     },

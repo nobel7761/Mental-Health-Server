@@ -1,7 +1,7 @@
-import { BloodGroup, Department, Gender, Role } from '@prisma/client';
+import { BloodGroup, Gender } from '@prisma/client';
 import { z } from 'zod';
 
-const createAdmin = z.object({
+const createPatient = z.object({
   body: z.object({
     name: z.string({ required_error: 'Name is Required!' }),
     email: z.string({ required_error: 'Email is Required!' }),
@@ -15,16 +15,10 @@ const createAdmin = z.object({
       [...Object.values(BloodGroup)] as [string, ...string[]],
       { required_error: 'Blood Group is Required!' }
     ),
-    role: z.enum([...Object.values(Role)] as [string, ...string[]], {
-      required_error: 'Role is Required!',
-    }),
-    department: z
-      .enum([...Object.values(Department)] as [string, ...string[]])
-      .optional(),
   }),
 });
 
-const updateAdmin = z.object({
+const updatePatient = z.object({
   body: z.object({
     name: z.string().optional(),
     email: z.string().optional(),
@@ -34,17 +28,13 @@ const updateAdmin = z.object({
     gender: z
       .enum([...Object.values(Gender)] as [string, ...string[]])
       .optional(),
-    role: z.enum([...Object.values(Role)] as [string, ...string[]]).optional(),
-    department: z
-      .enum([...Object.values(Department)] as [string, ...string[]])
-      .optional(),
     blood_group: z
       .enum([...Object.values(BloodGroup)] as [string, ...string[]])
       .optional(),
   }),
 });
 
-export const AdminValidation = {
-  createAdmin,
-  updateAdmin,
+export const PatientValidation = {
+  createPatient,
+  updatePatient,
 };

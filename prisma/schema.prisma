@@ -10,97 +10,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  phone_number String @unique
-  profile_image String
-  gender Gender
-  blood_group BloodGroup
-  role String @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum Gender {
+  MALE
+  FEMALE
+  OTHERS
 }
 
-model Admin{
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  phone_number String @unique
-  profile_image String
-  gender Gender
-  blood_group BloodGroup
-  role String @default("admin")
-  department AdminDepartment @default(USER_MANAGEMENT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum BloodGroup {
+  A_POSITIVE
+  B_POSITIVE
+  A_NEGATIVE
+  B_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
 }
 
-model Psychologist{
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  phone_number String @unique
-  profile_image String
-  gender Gender
-  blood_group BloodGroup
-  role String @default("psychologist")
-  timeSlot String
-  degree String
-  dayOff WeekDays @default(FRIDAY)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Course{
-  id String @id @default(uuid())
-  title String
-  description String
-  cover_photo String
-  duration String
-  price Int
-  discount Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-}
-
-model ServiceDepartment{
-  id String @id @default(uuid())
-  title ServiceDepartmentOptions @default(DOCTOR)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum ServiceDepartmentOptions {
-  DOCTOR
+enum Role {
+  PATIENT
+  ADMIN
+  SUPER_ADMIN
   PSYCHOLOGIST
+  DOCTOR
 }
 
-model UserEnrolledCourse{
-  id String @id @default(uuid())
-  status UserEnrolledCourseStatus? @default(ONGOING)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  userId String
-  user User @relation(fields: [userId], references: [id])
-
-  courseId String
-  course Course @relation(fields: [courseId], references: [id])
+enum Department {
+  PATIENT_DEPARTMENT
+  PSYCHOLOGIST_DEPARTMENT
+  DOCTOR_DEPARTMENT
 }
 
-enum UserEnrolledCourseStatus {
-  ONGOING
-  COMPLETED
-  WITHDRAWN
-}
-
-enum WeekDays {
+enum DayOff {
   SATURDAY
   SUNDAY
   MONDAY
@@ -110,34 +51,50 @@ enum WeekDays {
   FRIDAY
 }
 
-enum Role {
-  super_admin
-  admin
-  user
-  psychologist
-  doctor
+model Patient {
+  id       String  @id @default(uuid())
+  name     String
+  email    String  @unique
+  password String
+  phone_number String @unique
+  profile_image String
+  gender   Gender
+  blood_group BloodGroup
+  role     Role    @default(PATIENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-enum Gender {
-  MALE
-  FEMALE
-  OTHERS
+model Admin {
+  id         String  @id @default(uuid())
+  name       String
+  email      String  @unique
+  password   String
+  phone_number String @unique
+  profile_image String
+  gender     Gender
+  blood_group BloodGroup
+  role       Role
+  department  Department?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-enum BloodGroup {
-  A_POSITIVE
-  A_NEGATIVE
-  B_POSITIVE
-  B_NEGATIVE
-  AB_POSITIVE
-  AB_NEGATIVE
-  O_POSITIVE
-  O_NEGATIVE
-}
-
-enum AdminDepartment {
-  USER_MANAGEMENT
-  COURSE_MANAGEMENT
-  PSYCHOLOGIST_MANAGEMENT
-  DOCTORS_MANAGEMENT
+model Specialist {
+  id            String  @id @default(uuid())
+  name          String
+  email         String  @unique
+  password      String
+  phone_number  String @unique
+  profile_image String
+  gender        Gender
+  blood_group   BloodGroup
+  role          Role @default(PSYCHOLOGIST)
+  startTime     String
+  endTime       String
+  slots         String[]
+  degrees       String[]
+  dayOff        DayOff @default(FRIDAY)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
