@@ -69,8 +69,6 @@ const getAllPatient = catchAsync(async (req: Request, res: Response) => {
   } | null;
   const authUserId = decodedToken?.payload?.id as string;
 
-  console.log(authUserId);
-
   const filters = pick(req.query, PatientFilterAbleFileds);
   const options = pick(req.query, paginationFields);
 

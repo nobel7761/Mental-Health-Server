@@ -1,13 +1,13 @@
-import { Patient } from '@prisma/client';
+import { Patient, Role } from '@prisma/client';
 import httpStatus from 'http-status';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import prisma from '../../../shared/prisma';
-import { ILoginUserResponse } from './auth.interfaces';
+import { ILoginUserResponse, IProfileDataResponse } from './auth.interfaces';
 
-const login = async (
+const loginProfile = async (
   payload: Pick<Patient, 'email' | 'password'>
 ): Promise<ILoginUserResponse | null> => {
   const { email, password } = payload;
@@ -65,6 +65,98 @@ const login = async (
   };
 };
 
+const getMyProfile = async (
+  authUserId: string
+): Promise<IProfileDataResponse | null> => {
+  // You can use the authUserId and authUserRole to determine the role-based access if needed
+  // In this example, we are only using authUserId to fetch the user's profile
+
+  // Find the user by ID, assuming the user can exist in any of the three tables
+  const user =
+    (await prisma.patient.findFirst({
+      where: {
+        id: authUserId,
+      },
+    })) ||
+    (await prisma.admin.findFirst({
+      where: {
+        id: authUserId,
+      },
+    })) ||
+    (await prisma.specialist.findFirst({
+      where: {
+        id: authUserId,
+      },
+    }));
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User Not Found');
+  }
+
+  // If you need to return specific user data based on their role, you can add conditional logic here
+
+  // Return the user's profile data
+  return user;
+};
+
+const updateProfile = async (
+  authUserId: string,
+  updatedProfileData: Partial<IProfileDataResponse>
+): Promise<IProfileDataResponse | null> => {
+  // find the user first
+  const user =
+    (await prisma.patient.findFirst({
+      where: {
+        id: authUserId,
+      },
+    })) ||
+    (await prisma.admin.findFirst({
+      where: {
+        id: authUserId,
+      },
+    })) ||
+    (await prisma.specialist.findFirst({
+      where: {
+        id: authUserId,
+      },
+    }));
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User Not Found');
+  }
+
+  let updatedUser = null;
+
+  if (user.role === Role.PATIENT) {
+    updatedUser = await prisma.patient.update({
+      where: { id: authUserId },
+      data: updatedProfileData,
+    });
+  } else if (user.role === Role.ADMIN) {
+    updatedUser = await prisma.admin.update({
+      where: { id: authUserId },
+      data: updatedProfileData,
+    });
+  } else if (user.role === Role.SUPER_ADMIN) {
+    updatedUser = await prisma.admin.update({
+      where: { id: authUserId },
+      data: updatedProfileData,
+    });
+  } else if (user.role === Role.DOCTOR || user.role === Role.PSYCHOLOGIST) {
+    updatedUser = await prisma.specialist.update({
+      where: { id: authUserId },
+      data: updatedProfileData,
+    });
+  }
+
+  // If you need to return specific user data based on their role, you can add conditional logic here
+
+  // Return the updated user's profile data
+  return updatedUser;
+};
+
 export const AuthService = {
-  login,
+  loginProfile,
+  getMyProfile,
+  updateProfile,
 };
