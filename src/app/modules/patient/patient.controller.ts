@@ -25,15 +25,11 @@ const updatePatient = catchAsync(async (req: Request, res: Response) => {
   const decodedToken = jwt.decode(accessToken, { complete: true }) as {
     payload: JwtPayload;
   } | null;
-  const authPatientId = decodedToken?.payload?.id as string;
+  const authUserId = decodedToken?.payload?.id as string;
 
   const { id } = req.params;
 
-  const result = await PatientService.updatePatient(
-    id,
-    req.body,
-    authPatientId
-  );
+  const result = await PatientService.updatePatient(id, req.body, authUserId);
 
   sendResponse<Patient>(res, {
     statusCode: httpStatus.OK,
@@ -48,11 +44,11 @@ const deletePatient = catchAsync(async (req: Request, res: Response) => {
   const decodedToken = jwt.decode(accessToken, { complete: true }) as {
     payload: JwtPayload;
   } | null;
-  const authPatientId = decodedToken?.payload?.id as string;
+  const authUserId = decodedToken?.payload?.id as string;
 
   const { id } = req.params;
 
-  const result = await PatientService.deletePatient(id, authPatientId);
+  const result = await PatientService.deletePatient(id, authUserId);
 
   sendResponse<Patient>(res, {
     statusCode: httpStatus.OK,
