@@ -12,31 +12,40 @@ const login = async (
 ): Promise<ILoginUserResponse | null> => {
   const { email, password } = payload;
 
-  let isExists;
+  // Check if the user exists in any of the tables
+  const user =
+    (await prisma.patient.findFirst({
+      where: {
+        email: email,
+      },
+    })) ||
+    (await prisma.admin.findFirst({
+      where: {
+        email: email,
+      },
+    })) ||
+    (await prisma.specialist.findFirst({
+      where: {
+        email: email,
+      },
+    }));
 
-  isExists = await prisma.patient.findFirst({
-    where: {
-      email: email,
-    },
-  });
-
-  isExists = await prisma.admin.findFirst({
-    where: {
-      email: email,
-    },
-  });
-
-  if (!isExists) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'User Does Not Exists!');
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'User Does Not Exist!');
   }
 
-  if (isExists.password !== password)
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password Does Not Match');
+  //! Verify the password using bcrypt
+  // const passwordMatch = await bcrypt.compare(password, user.password);
+  // if (!passwordMatch) {
+  //   throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect Password');
+  // }
 
-  // if user exists and password match then JWT will generate a token witch will be sent from server side to client side. client side will store this token in the browser(localstorage/cookies) so that when user try to login for the next(hit the url) time then user does not need to give id, password again(if the token does not expired) to login. Then we'll send this token with every single request and server will check the token. if the token is authorized then user can make request and then server will give the access through route(so we need to handle this from route level). otherwise user will get failed.
+  if (user.password !== password) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Password Does Not Match!');
+  }
 
-  // create access token & refresh token
-  const { id, role } = isExists;
+  // User exists and password is correct, create access and refresh tokens
+  const { id, role } = user;
 
   const accessToken = jwtHelpers.createToken(
     { id, role },
