@@ -1,7 +1,7 @@
 import moment from 'moment';
 import { PATIENT_WATCHING_DURATION } from '../../../enums/specialist';
 
-export const generateDoctorSlots = (
+export const generateSpecialistSlots = (
   startTime: string,
   endTime: string
 ): string[] => {

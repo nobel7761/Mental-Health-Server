@@ -1,2 +1,16 @@
+export const SpecialistFilterAbleFileds: string[] = [
+  'searchTerm',
+  'gender',
+  'blood_group',
+  'startTime',
+  'endTime',
+  'dayOff',
+];
 
-// Define your constants here
+export const SpecialistSearchableFields: string[] = [
+  'name',
+  'email',
+  'phone_number',
+  'gender',
+  'blood_group',
+];
