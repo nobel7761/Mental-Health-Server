@@ -207,76 +207,10 @@ const deleteSingleAdmin = async (id: string): Promise<Admin | null> => {
   return result;
 };
 
-// const getMyProfile = async (authUserId: string): Promise<Admin | null> => {
-//   const result = await prisma.admin.findUnique({
-//     where: {
-//       id: authUserId,
-//     },
-//   });
-
-//   return result;
-// };
-
-// const updateMyProfile = async (
-//   authUserId: string,
-//   payload: Partial<Admin>
-// ): Promise<Admin | null> => {
-//   const isExists = await prisma.admin.findUnique({
-//     where: {
-//       id: authUserId,
-//     },
-//   });
-
-//   if (!isExists) {
-//     throw new ApiError(httpStatus.BAD_REQUEST, 'Profile Not Found!');
-//   }
-
-//   if (payload.email) {
-//     const findDuplicateEmail = await prisma.user.findUnique({
-//       where: {
-//         email: payload?.email,
-//       },
-//     });
-
-//     if (findDuplicateEmail) {
-//       throw new ApiError(
-//         httpStatus.BAD_REQUEST,
-//         'User Exists With This Email!'
-//       );
-//     }
-//   }
-
-//   if (payload.phone_number) {
-//     const findDuplicatePhoneNumber = await prisma.user.findUnique({
-//       where: {
-//         phone_number: payload?.phone_number,
-//       },
-//     });
-
-//     if (findDuplicatePhoneNumber) {
-//       throw new ApiError(
-//         httpStatus.BAD_REQUEST,
-//         'User Exists With This Phone Number!'
-//       );
-//     }
-//   }
-
-//   const result = await prisma.admin.update({
-//     where: {
-//       id: authUserId,
-//     },
-//     data: payload,
-//   });
-
-//   return result;
-// };
-
 export const AdminService = {
   createAdmin,
   updateAdmin,
   getAllAdmin,
   getSingleAdmin,
   deleteSingleAdmin,
-  // getMyProfile,
-  // updateMyProfile,
 };

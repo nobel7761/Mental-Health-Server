@@ -35,12 +35,4 @@ router.delete(
   AdminController.deleteSingleAdmin
 );
 
-// router.get('/my-profile', AdminController.getMyProfile);
-
-// router.patch(
-//   '/update-my-profile',
-//   validateRequest(AdminValidation.updateAdmin),
-//   AdminController.updateMyProfile
-// );
-
 export const AdminRoutes = router;

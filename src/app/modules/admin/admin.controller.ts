@@ -69,46 +69,10 @@ const deleteSingleAdmin = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// const getMyProfile = catchAsync(async (req: Request, res: Response) => {
-//   const accessToken = req.headers.authorization as string;
-//   const decodedToken = jwt.decode(accessToken, { complete: true }) as {
-//     payload: JwtPayload;
-//   } | null;
-//   const id = decodedToken?.payload?.id as string;
-
-//   const result = await AdminService.getMyProfile(id);
-
-//   sendResponse<Admin>(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Your Profile Info Retrieved Successfully',
-//     data: result,
-//   });
-// });
-
-// const updateMyProfile = catchAsync(async (req: Request, res: Response) => {
-//   const accessToken = req.headers.authorization as string;
-//   const decodedToken = jwt.decode(accessToken, { complete: true }) as {
-//     payload: JwtPayload;
-//   } | null;
-//   const id = decodedToken?.payload?.id as string;
-
-//   const result = await AdminService.updateMyProfile(id, req.body);
-
-//   sendResponse<Admin>(res, {
-//     statusCode: httpStatus.OK,
-//     success: true,
-//     message: 'Your Profile Info Updated Successfully',
-//     data: result,
-//   });
-// });
-
 export const AdminController = {
   createAdmin,
   updateAdmin,
   getAllAdmin,
   getSingleAdmin,
   deleteSingleAdmin,
-  // getMyProfile,
-  // updateMyProfile,
 };
