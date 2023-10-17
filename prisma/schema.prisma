@@ -52,17 +52,21 @@ enum DayOff {
 }
 
 model Patient {
-  id       String  @id @default(uuid())
-  name     String
-  email    String  @unique
-  password String
-  phone_number String @unique
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String
+  phone_number  String    @unique
   profile_image String
-  gender   Gender
-  blood_group BloodGroup
-  role     Role    @default(PATIENT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  gender        Gender
+  blood_group   BloodGroup
+  role          Role      @default(PATIENT)
+  area          String[]
+  fees          Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+  bookingHistories BookingHistory[]
 }
 
 model Admin {
@@ -81,20 +85,66 @@ model Admin {
 }
 
 model Specialist {
-  id            String  @id @default(uuid())
+  id            String   @id @default(uuid())
   name          String
-  email         String  @unique
+  email         String   @unique
   password      String
-  phone_number  String @unique
+  phone_number  String   @unique
   profile_image String
   gender        Gender
   blood_group   BloodGroup
-  role          Role @default(PSYCHOLOGIST)
+  role          Role     @default(PSYCHOLOGIST)
   startTime     String
   endTime       String
   slots         String[]
   degrees       String[]
-  dayOff        DayOff @default(FRIDAY)
+  dayOff        DayOff   @default(FRIDAY)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  bookings      Booking[]
+  bookingHistories BookingHistory[]
+}
+
+model Booking{
+  id            String @id @default(uuid())
+  date          DateTime
+  slot          String
+  status        BookingStatus @default(PENDING)
+  is_payment_completed Boolean @default(false)
+
+  patient_id    String
+  patient       Patient @relation(fields: [patient_id], references: [id])
+
+  specialist_id String
+  specialist    Specialist @relation(fields: [specialist_id], references: [id])
+
+  createdAt     DateTime @default(now()) 
+  updatedAt     DateTime @updatedAt
+}
+
+model BookingHistory {
+  id                 String   @id @default(uuid())
+  date               DateTime
+  status             BookingStatus
+
+  patient_id          String
+  patient            Patient   @relation(fields: [patient_id], references: [id])
+
+  specialist_id       String
+  specialist         Specialist   @relation(fields: [specialist_id], references: [id])
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+enum BookingStatus {
+  ACTIVE
+  PENDING
+  CANCELED
+}
+
+enum Payment {
+  TRUE
+  FALSE
 }
