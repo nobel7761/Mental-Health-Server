@@ -51,6 +51,36 @@ enum DayOff {
   FRIDAY
 }
 
+enum BookingStatus {
+  ACTIVE
+  PENDING
+  CANCELED
+}
+
+enum DoctorArea {
+  CARDIOLOGISTS
+  OBS_AND_GYNAE
+  MEDICINE
+  ENT
+  DERMATOLOGY_AND_SKIN
+  EYE
+  ORAL_AND_DENTAL
+  HAEMATOLOGIST
+  CANCER
+  NEUROLOGY
+  CHEST
+  PSYCHIATRIST
+  UROLOGIST
+  PGYSIOTHERAPY
+  CHILD
+  NUTRITIONIST
+  ORTHOPEDIC
+  SURGERY
+  ENDOCRINOLOGY
+  NEPHROLOGY
+  SPINE_AND_NEUROSURGERY
+}
+
 model Patient {
   id            String    @id @default(uuid())
   name          String
@@ -61,12 +91,10 @@ model Patient {
   gender        Gender
   blood_group   BloodGroup
   role          Role      @default(PATIENT)
-  area          String[]
-  fees          Int
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   bookings      Booking[]
-  bookingHistories BookingHistory[]
 }
 
 model Admin {
@@ -94,6 +122,8 @@ model Specialist {
   gender        Gender
   blood_group   BloodGroup
   role          Role     @default(PSYCHOLOGIST)
+  specialization DoctorArea  @default(MEDICINE)
+  fees          Int @default(500)
   startTime     String
   endTime       String
   slots         String[]
@@ -103,7 +133,6 @@ model Specialist {
   updatedAt     DateTime @updatedAt
 
   bookings      Booking[]
-  bookingHistories BookingHistory[]
 }
 
 model Booking{
@@ -113,38 +142,13 @@ model Booking{
   status        BookingStatus @default(PENDING)
   is_payment_completed Boolean @default(false)
 
-  patient_id    String
-  patient       Patient @relation(fields: [patient_id], references: [id])
+  patient      Patient @relation(fields: [patientId], references: [id])
+  patientId    String
 
-  specialist_id String
-  specialist    Specialist @relation(fields: [specialist_id], references: [id])
+  specialist    Specialist @relation(fields: [specialistId], references: [id])
+  specialistId String
 
   createdAt     DateTime @default(now()) 
   updatedAt     DateTime @updatedAt
 }
 
-model BookingHistory {
-  id                 String   @id @default(uuid())
-  date               DateTime
-  status             BookingStatus
-
-  patient_id          String
-  patient            Patient   @relation(fields: [patient_id], references: [id])
-
-  specialist_id       String
-  specialist         Specialist   @relation(fields: [specialist_id], references: [id])
-  
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-}
-
-enum BookingStatus {
-  ACTIVE
-  PENDING
-  CANCELED
-}
-
-enum Payment {
-  TRUE
-  FALSE
-}
