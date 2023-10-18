@@ -1,7 +1,7 @@
-import express from 'express';
+// import express from 'express';
 
-const router = express.Router();
+// const router = express.Router();
 
-router.post('/make-payment', PaymentController.makePayment);
+// router.post('/make-payment', PaymentController.makePayment);
 
-export const PaymentRoutes = router;
+// export const PaymentRoutes = router;
